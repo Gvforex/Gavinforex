@@ -7,7 +7,7 @@
 html.gv-locked body>*:not(#gvGate):not(script):not(style){display:none!important}
 html.gv-locked,html.gv-locked body{overflow:hidden}
 body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-input,textarea,select{-webkit-user-select:text!important;user-select:text!important}
+input,textarea,select{-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important}
 img{-webkit-user-drag:none;user-drag:none}
 #gvGate{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:20px;overflow:hidden;
   background:radial-gradient(circle at 20% 10%,#14305a 0,transparent 42%),radial-gradient(circle at 85% 90%,#0b4a3a 0,transparent 40%),#050810;
@@ -2821,7 +2821,8 @@ window.__nbClassify=classify;
     var res=[{c:tp[0]>=0?'y':'',s:(tp[0]>=0?'✓ ':'')+'TP1'},{c:tp[1]>=0?'y':'',s:(tp[1]>=0?'✓ ':'')+'TP2'},
              {c:tp[2]>=0?'y':'',s:(tp[2]>=0?'✓ ':'')+'TP3'},{c:sl>=0?'r':'',s:(sl>=0?'✕ ':'')+'SL'}];
     var sub=entryWord()+' '+T0.entry.toFixed(2)+' · '+(moveR>=0?'+':'')+moveR.toFixed(2)+'R · '+String(bars[T0.start].t).slice(0,16);
-    var r=function(cls,main){return{cls:cls,main:main,sub:sub,chips:chips,res:res}};
+    var V={chart:curKey(),id:curKey()+'|'+bars[T0.start].t+'|'+d,d:d,tp:[tp[0]>=0,tp[1]>=0,tp[2]>=0],sl:sl>=0,conf:false};
+    var r=function(cls,main){V.conf=(cls==='buy'||cls==='sell');return{cls:cls,main:main,sub:sub,chips:chips,res:res,v:V}};
     var same=sl>=0&&tp.some(function(x){return x===sl});
     if(!fresh&&sl<0&&nHit===0)return r('wait',tx(4,{d:d}));
     if(same)return r('off',tx(11,{d:d}));
@@ -2839,7 +2840,8 @@ window.__nbClassify=classify;
     var show=!(window.gavinChartMode&&window.gavinChartMode()!=='gavin'); /* signals only exist on the Gavin - Trade chart */
     box.style.display=show?'':'none';if(!show)return;
     var cs=function(a){return a.map(function(c){return'<span class="gvc-chip '+c.c+'">'+c.s+'</span>'}).join('')};
-    var r=ev(),h='<div class="gvc-bar"></div><div class="gvc-body"><div class="gvc-main">'+r.main+'</div>'+
+    var r=ev();try{window.gavinVoiceCheck&&window.gavinVoiceCheck(r.v)}catch(e){}
+    var h='<div class="gvc-bar"></div><div class="gvc-body"><div class="gvc-main">'+r.main+'</div>'+
       (r.sub?'<div class="gvc-sub">'+r.sub+'</div>':'')+
       (r.chips.length?'<div class="gvc-chips">'+cs(r.chips)+'</div><div class="gvc-chips">'+cs(r.res)+'</div>':'')+'</div>';
     var k=r.cls+h;if(k===lastKey)return;lastKey=k;
@@ -2917,12 +2919,12 @@ window.__nbClassify=classify;
 })();
 </script>
 <style id="gv-scroll-css">
-#gvScroll{position:fixed;right:max(8px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:900;display:flex;flex-direction:column;gap:10px}
-#gvScroll button{width:42px!important;height:42px;min-height:0!important;padding:0!important;border-radius:50%!important;border:1px solid rgba(244,199,106,.45)!important;
+#gvScroll{position:fixed;right:max(8px,env(safe-area-inset-right));top:64%;transform:translateY(-50%);z-index:900;display:flex;flex-direction:column;align-items:center;gap:8px}
+#gvScroll button{width:32px!important;height:32px;min-height:0!important;padding:0!important;border-radius:50%!important;border:1px solid rgba(244,199,106,.45)!important;
   background:rgba(12,18,30,.78)!important;color:#f4c76a!important;font-size:18px!important;line-height:1;cursor:pointer;
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 22px rgba(0,0,0,.45);touch-action:manipulation;transition:.15s}
 #gvScroll button:active{transform:scale(.9);background:rgba(244,199,106,.25)!important}
-@media(max-width:680px){#gvScroll button{width:38px!important;height:38px;opacity:.88}}
+@media(max-width:680px){#gvScroll button{width:30px!important;height:30px;font-size:14px!important;opacity:.8}#gvScroll{gap:7px;right:4px}}
 </style>
 <div id="gvScroll" aria-label="scroll"><button type="button" id="gvUp" aria-label="Up">▲</button><button type="button" id="gvDn" aria-label="Down">▼</button></div>
 <script id="gv-scroll-script">
@@ -2944,11 +2946,165 @@ window.__nbClassify=classify;
   bind('gvUp',-1);bind('gvDn',1);
 })();
 </script>
+<style id="gv-ai-css">
+#gvScroll #gvAi{width:30px!important;min-width:0;height:30px;border-radius:50%!important;padding:0!important;font-size:13px!important;font-weight:900;display:flex;align-items:center;justify-content:center;gap:0;opacity:.82;
+  background:linear-gradient(135deg,#ffe29a,#f4c76a 55%,#d99a2b)!important;color:#2b1d00!important;border-color:rgba(255,226,154,.7)!important}
+#gvScroll #gvAi.off{background:rgba(12,18,30,.78)!important;color:#8f9bad!important;border-color:rgba(255,255,255,.18)!important}
+#gvScroll #gvAi.talk{animation:gvTalk 1s ease-in-out infinite}
+@keyframes gvTalk{0%,100%{box-shadow:0 0 0 0 rgba(244,199,106,.55)}50%{box-shadow:0 0 0 9px rgba(244,199,106,0)}}
+#gvScroll #gvAi span{display:none}
+</style>
+<script id="gv-ai-voice">
+/* AI voice (female): speaks when a BUY / SELL signal is confirmed and when TP1 / TP2 / TP3 / SL is reached. Lao -> Thai voice. */
+(function(){
+  var KEY='gv_ai_voice',BCP={th:'th-TH',en:'en-US',zh:'zh-CN',ja:'ja-JP',ko:'ko-KR',vi:'vi-VN',id:'id-ID',ms:'ms-MY',es:'es-ES',fr:'fr-FR',de:'de-DE',pt:'pt-BR',ru:'ru-RU',ar:'ar-SA',hi:'hi-IN'};
+  var TX={
+   th:{b:'สัญญาณซื้อ',s:'สัญญาณขาย',c:'{d} ยืนยันแล้วค่ะ',t:['{d} ถึงเป้าหมายที่หนึ่งแล้วค่ะ','{d} ถึงเป้าหมายที่สองแล้วค่ะ','{d} ถึงเป้าหมายที่สามแล้วค่ะ'],l:'{d} แตะจุดตัดขาดทุนแล้วค่ะ',on:'เปิดเสียงเอไอแล้วค่ะ'},
+   en:{b:'Buy signal',s:'Sell signal',c:'{d} confirmed.',t:['{d} has reached target one.','{d} has reached target two.','{d} has reached target three.'],l:'{d} has hit the stop loss.',on:'AI voice is on.'},
+   zh:{b:'买入信号',s:'卖出信号',c:'{d}已确认。',t:['{d}已到达第一止盈目标。','{d}已到达第二止盈目标。','{d}已到达第三止盈目标。'],l:'{d}已触及止损。',on:'AI语音已开启。'},
+   ja:{b:'買いシグナル',s:'売りシグナル',c:'{d}が確認されました。',t:['{d}がターゲット1に到達しました。','{d}がターゲット2に到達しました。','{d}がターゲット3に到達しました。'],l:'{d}がストップロスに到達しました。',on:'AIボイスをオンにしました。'},
+   ko:{b:'매수 신호',s:'매도 신호',c:'{d}가 확인되었습니다.',t:['{d}가 목표 1에 도달했습니다.','{d}가 목표 2에 도달했습니다.','{d}가 목표 3에 도달했습니다.'],l:'{d}가 손절가에 도달했습니다.',on:'AI 음성이 켜졌습니다.'},
+   vi:{b:'Tín hiệu mua',s:'Tín hiệu bán',c:'{d} đã được xác nhận.',t:['{d} đã chạm mục tiêu một.','{d} đã chạm mục tiêu hai.','{d} đã chạm mục tiêu ba.'],l:'{d} đã chạm điểm cắt lỗ.',on:'Giọng nói AI đã bật.'},
+   id:{b:'Sinyal beli',s:'Sinyal jual',c:'{d} terkonfirmasi.',t:['{d} telah mencapai target satu.','{d} telah mencapai target dua.','{d} telah mencapai target tiga.'],l:'{d} menyentuh stop loss.',on:'Suara AI aktif.'},
+   ms:{b:'Isyarat beli',s:'Isyarat jual',c:'{d} telah disahkan.',t:['{d} telah mencapai sasaran satu.','{d} telah mencapai sasaran dua.','{d} telah mencapai sasaran tiga.'],l:'{d} telah mencecah henti rugi.',on:'Suara AI dihidupkan.'},
+   es:{b:'Señal de compra',s:'Señal de venta',c:'{d} confirmada.',t:['{d} alcanzó el objetivo uno.','{d} alcanzó el objetivo dos.','{d} alcanzó el objetivo tres.'],l:'{d} alcanzó el stop loss.',on:'Voz de IA activada.'},
+   fr:{b:'Signal d’achat',s:'Signal de vente',c:'{d} confirmé.',t:['{d} a atteint l’objectif un.','{d} a atteint l’objectif deux.','{d} a atteint l’objectif trois.'],l:'{d} a touché le stop loss.',on:'Voix IA activée.'},
+   de:{b:'Kaufsignal',s:'Verkaufssignal',c:'{d} bestätigt.',t:['{d} hat Ziel eins erreicht.','{d} hat Ziel zwei erreicht.','{d} hat Ziel drei erreicht.'],l:'{d} hat den Stop-Loss erreicht.',on:'KI-Stimme ist an.'},
+   pt:{b:'Sinal de compra',s:'Sinal de venda',c:'{d} confirmado.',t:['{d} atingiu o alvo um.','{d} atingiu o alvo dois.','{d} atingiu o alvo três.'],l:'{d} atingiu o stop loss.',on:'Voz de IA ativada.'},
+   ru:{b:'Сигнал на покупку',s:'Сигнал на продажу',c:'{d} подтверждён.',t:['{d}: достигнута первая цель.','{d}: достигнута вторая цель.','{d}: достигнута третья цель.'],l:'{d}: сработал стоп-лосс.',on:'Голос ИИ включён.'},
+   ar:{b:'إشارة الشراء',s:'إشارة البيع',c:'تم تأكيد {d}.',t:['{d} وصلت إلى الهدف الأول.','{d} وصلت إلى الهدف الثاني.','{d} وصلت إلى الهدف الثالث.'],l:'{d} وصلت إلى وقف الخسارة.',on:'تم تشغيل صوت الذكاء الاصطناعي.'},
+   hi:{b:'खरीद सिग्नल',s:'बिक्री सिग्नल',c:'{d} कन्फर्म हो गया।',t:['{d} पहले लक्ष्य तक पहुँच गया।','{d} दूसरे लक्ष्य तक पहुँच गया।','{d} तीसरे लक्ष्य तक पहुँच गया।'],l:'{d} स्टॉप लॉस तक पहुँच गया।',on:'AI आवाज़ चालू है।'}
+  };
+  var FEM=/female|woman|zira|aria|jenny|samantha|karen|moira|tessa|victoria|susan|hazel|libby|sonia|emma|ava\b|allison|kanya|narisa|premwadee|achara|yuna|kyoko|mei-?jia|ting-?ting|sin-?ji|nanami|xiaoxiao|hoaimy|linh|damayanti|gadis|yasmin|monica|paulina|helena|laura|amelie|marie|denise|julie|hortense|katja|anna|joana|luciana|francisca|maria|tatyana|milena|irina|svetlana|laila|zariyah|lekha|kalpana|swara|google/i;
+  var MAL=/(^|[^a-z])male|david|mark\b|daniel|alex\b|fred\b|george|guy\b|ryan|james|thomas|jorge|diego|pablo|rishi|niwat|pattara|hemant|kangkang|naayf|stefan|killian|ravi/i;
+  var btn=null,ssu='speechSynthesis' in window;
+  if(ssu){try{speechSynthesis.getVoices();speechSynthesis.addEventListener?speechSynthesis.addEventListener('voiceschanged',function(){speechSynthesis.getVoices()}):(speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices()})}catch(e){}}
+  function on(){try{return localStorage.getItem(KEY)!=='0'}catch(e){return true}}
+  function curLang(){return (typeof currentLang!=='undefined')?currentLang:'en'}
+  function voices(){try{return ssu?speechSynthesis.getVoices():[]}catch(e){return[]}}
+  function has(bcp){var p=bcp.split('-')[0].toLowerCase();return voices().some(function(v){return v.lang&&v.lang.toLowerCase().replace('_','-').indexOf(p)===0})}
+  function pick(bcp){
+    var p=bcp.split('-')[0].toLowerCase(),best=null,bs=-99;
+    voices().forEach(function(v){
+      var l=(v.lang||'').toLowerCase().replace('_','-');if(l.indexOf(p)!==0)return;
+      var sc=0,n=v.name||'';
+      if(l===bcp.toLowerCase())sc+=3;
+      if(MAL.test(n)&&!/female/i.test(n))sc-=6;
+      else if(FEM.test(n))sc+=3;
+      if(/natural|neural|online/i.test(n))sc+=1;
+      if(sc>bs){bs=sc;best=v}
+    });
+    return best;
+  }
+  /* Lao is spoken in Thai; a language without an installed voice falls back to English */
+  function plan(){
+    var L=curLang();if(L==='lo')L='th';if(!TX[L])L='en';
+    return {L:L,bcp:BCP[L]};
+  }
+  /* ---------- universal sound engine: chime + system voice + online voice fallback ---------- */
+  var AC=null,tts=null,watch=0,SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+  function ctx(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}if(AC&&AC.state==='suspended')AC.resume()}catch(e){}return AC}
+  function chime(kind){ /* short tone so there is ALWAYS a sound even if no voice works */
+    var c=ctx();if(!c)return;
+    try{
+      var f=kind==='l'?[440,300]:[660,880],t=c.currentTime;
+      f.forEach(function(hz,k){
+        var o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=hz;
+        g.gain.setValueAtTime(0,t+k*.14);g.gain.linearRampToValueAtTime(.25,t+k*.14+.02);g.gain.exponentialRampToValueAtTime(.001,t+k*.14+.2);
+        o.connect(g);g.connect(c.destination);o.start(t+k*.14);o.stop(t+k*.14+.22);
+      });
+    }catch(e){}
+  }
+  function onlineTTS(text,bcp){
+    try{
+      if(!tts){tts=new Audio();tts.preload='auto'}
+      var tl=bcp.split('-')[0];if(tl==='zh')tl='zh-CN';
+      tts.pause();
+      tts.src='https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl='+tl+'&q='+encodeURIComponent(text);
+      tts.onplay=function(){if(btn)btn.classList.add('talk')};
+      tts.onended=tts.onerror=tts.onpause=function(){if(btn)btn.classList.remove('talk')};
+      var pr=tts.play();if(pr&&pr.catch)pr.catch(function(){});
+    }catch(e){}
+  }
+  function sysVoice(text,bcp){
+    /* returns true if the system voice was started */
+    if(!ssu)return false;
+    var vs=voices();if(!vs.length||!has(bcp))return false;
+    try{
+      speechSynthesis.resume();
+      var u=new SpeechSynthesisUtterance(text),started=false;u.lang=bcp;
+      var v=pick(bcp);if(v)u.voice=v;
+      u.rate=.95;u.pitch=1.2;u.volume=1;
+      u.onstart=function(){started=true;clearTimeout(watch);if(btn)btn.classList.add('talk')};
+      u.onend=function(){if(btn&&!speechSynthesis.speaking)btn.classList.remove('talk')};
+      u.onerror=function(){clearTimeout(watch);if(!started)onlineTTS(text,bcp);if(btn)btn.classList.remove('talk')};
+      window.__gvU=u;
+      speechSynthesis.speak(u);
+      clearTimeout(watch);
+      watch=setTimeout(function(){ if(!started){try{speechSynthesis.cancel()}catch(e){}onlineTTS(text,bcp)} },1800); /* system voice silent -> online voice */
+      return true;
+    }catch(e){return false}
+  }
+  function say(text,bcp,flush,kind){
+    if(!text)return;
+    chime(kind||'c');
+    try{if(flush&&ssu)speechSynthesis.cancel()}catch(e){}
+    setTimeout(function(){ if(!sysVoice(text,bcp))onlineTTS(text,bcp) },flush?150:380);
+  }
+  function speak(kind,d,n){
+    if(!on())return;
+    var p=plan(),T=TX[p.L],dw=d==='BUY'?T.b:T.s,s;
+    if(kind==='c')s=T.c;else if(kind==='t')s=T.t[n];else s=T.l;
+    say(s.replace('{d}',dw),p.bcp,false,kind);
+  }
+  /* ---- on/off button ---- */
+  function paintBtn(){
+    if(!btn)return;var o=on();
+    btn.classList.toggle('off',!o);
+    btn.innerHTML=(o?'🔊':'🔇')+'<span>AI</span>';
+    btn.title=btn.ariaLabel=o?'AI voice: ON':'AI voice: OFF';
+  }
+  function mount(){
+    var box=document.getElementById('gvScroll');if(!box||document.getElementById('gvAi'))return;
+    btn=document.createElement('button');btn.type='button';btn.id='gvAi';
+    box.insertBefore(btn,box.firstChild);paintBtn();
+    btn.addEventListener('click',function(){
+      var o=!on();try{localStorage.setItem(KEY,o?'1':'0')}catch(e){}
+      paintBtn();
+      if(o){var p=plan();say(TX[p.L].on,p.bcp,true)}else{try{speechSynthesis.cancel()}catch(e){}btn.classList.remove('talk')}
+    });
+  }
+  mount();
+  /* browsers only allow speech after a user tap: unlock it on the first touch/click */
+  function unlock(){
+    ['pointerdown','touchstart','touchend','click','keydown'].forEach(function(n){document.removeEventListener(n,unlock,true)});
+    ctx();
+    try{if(!tts){tts=new Audio()}tts.src=SILENT;var pr=tts.play();if(pr&&pr.catch)pr.catch(function(){})}catch(e){}
+    try{if(ssu){speechSynthesis.resume();var u=new SpeechSynthesisUtterance('.');u.volume=0;speechSynthesis.speak(u)}}catch(e){}
+  }
+  ['pointerdown','touchstart','touchend','click','keydown'].forEach(function(n){document.addEventListener(n,unlock,true)});
+  /* ---- signal watcher ---- */
+  var ann={},lastChart=null,seed=false;
+  window.gavinVoiceCheck=function(v){
+    if(!v){lastChart=null;return}
+    if(v.chart!==lastChart){lastChart=v.chart;ann={};seed=true}   /* switching pair / timeframe: what already happened stays silent */
+    var a=ann[v.id];
+    if(!a){a=ann[v.id]={c:false,t:[false,false,false],s:false};
+      if(seed){a.c=v.conf;a.t=v.tp.slice();a.s=v.sl}
+      seed=false}
+    if(v.conf&&!a.c){a.c=true;speak('c',v.d)}
+    var hi=-1;for(var i=0;i<3;i++){if(v.tp[i]&&!a.t[i]){a.t[i]=true;hi=i}}
+    if(hi>=0)speak('t',v.d,hi);
+    if(v.sl&&!a.s){a.s=true;speak('l',v.d)}
+  };
+  window.addEventListener('beforeunload',function(){try{speechSynthesis.cancel()}catch(e){}});
+})();
+</script>
 <script id="gv-protect-script">
 (function(){
   /* Deterrent only: runs in the visitor's browser, so it slows copying but cannot make a web page impossible to copy */
   function isField(t){return t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)}
-  document.addEventListener('contextmenu',function(e){e.preventDefault()});
+  document.addEventListener('contextmenu',function(e){if(!isField(e.target))e.preventDefault()});
   ['copy','cut','dragstart','selectstart'].forEach(function(n){
     document.addEventListener(n,function(e){if(!isField(e.target))e.preventDefault()},true);
   });
