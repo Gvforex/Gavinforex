@@ -81,7 +81,18 @@ html.gv-locked #gvGate{display:flex}
 })();
 </script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>FOREX • TradingView Signal</title>
+<title>GVforex</title>
+<meta name="application-name" content="GVforex">
+<meta name="apple-mobile-web-app-title" content="GVforex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}</script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#06080c;color:#eef3f8;font-family:Arial,sans-serif}
 .wrap{max-width:1120px;margin:auto;padding:12px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -308,6 +319,10 @@ button:hover{transform:translateY(-1px);filter:brightness(1.08)}
 .guide-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid #202c39}
 .guide-title{font-size:13.5px;font-weight:900;color:#20df80}
 .guide-x{width:30px!important;height:30px;min-height:0!important;padding:0!important;margin:0!important;border-radius:50%!important;font-size:22px!important;line-height:1;background:#1b2231!important;color:#e6edf3!important;border:1px solid #2a2e39!important}
+.guide-foot{flex:0 0 auto;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid #202c39;background:#0f1420}
+.guide-read{width:100%!important;min-height:0!important;height:44px;margin:0!important;padding:0 14px!important;font-size:14px!important;font-weight:900!important;line-height:1!important;border-radius:12px!important;background:rgba(32,223,128,.14)!important;color:#20df80!important;border:1px solid rgba(32,223,128,.55)!important;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.guide-read.on{background:#20df80!important;color:#04130c!important}
+.guide-body{min-height:0}
 .guide-body{padding:4px 14px 14px;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:11.5px;line-height:1.4}
 .guide-body h4{margin:10px 0 3px;font-size:12px;font-weight:900;color:#fff;letter-spacing:.2px}
 .guide-body ul{margin:0;padding:0;list-style:none}
@@ -371,6 +386,11 @@ button:hover{transform:translateY(-1px);filter:brightness(1.08)}
 .ts-chip span{display:block;font-size:9.5px;color:#5f6b7c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ts-chip.hit{background:rgba(0,230,118,.09);border-color:rgba(0,230,118,.4)}
 .ts-chip.hit b{color:#00e676}.ts-chip.hit span{color:#b7c3d0}
+.ts-chip span.el2{color:#8a97a8}.ts-chip.hit span.el2{color:#9fb0c3}
+.ts-chip span.pp{font-weight:900;color:#5f6b7c}.ts-chip.hit span.pp{color:#00e676}.ts-chip.sl.hit span.pp{color:#ff5d6c}
+.ts-bar .av{font-size:9px;color:#8a97a8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ts-sync{margin-top:8px;padding:6px 8px;border-radius:8px;font-size:10px;line-height:1.45;background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.25);color:#9fd9b8}
+.ts-sync.off{background:rgba(244,199,106,.08);border-color:rgba(244,199,106,.3);color:#d9b768}
 .ts-chip.sl.hit{background:rgba(242,54,69,.1);border-color:rgba(242,54,69,.45)}
 .ts-chip.sl.hit b{color:#ff5d6c}
 .ts-det{margin-top:8px;padding-top:8px;border-top:1px dashed #263041}
@@ -1029,6 +1049,9 @@ body{padding-bottom:110px!important}
 .nb-why{font-size:11px;color:#9aa7b8;margin-top:6px;line-height:1.45}
 .nb-empty{color:#8f9bad;text-align:center;padding:18px 6px;font-size:13px}
 .nb-disc{font-size:10.5px;color:#738190;line-height:1.5;margin-top:10px}
+.nb .nb-read{width:auto!important;min-height:0!important;margin:0 0 0 auto!important;padding:4px 10px!important;font-size:12px!important;font-weight:800!important;line-height:1.2!important;border-radius:20px!important;background:rgba(244,199,106,.12)!important;color:#f4c76a!important;border:1px solid rgba(244,199,106,.4)!important;cursor:pointer;white-space:nowrap;flex:0 0 auto}
+.nb .nb-read.on{background:#f4c76a!important;color:#1a1200!important}
+.nb .nb-read-s{margin:0!important;padding:7px 10px!important;font-size:14px!important}
 @media(max-width:680px){
   .nb{padding-left:4px;padding-right:4px}
   .nb-strip{padding:8px 9px;gap:8px}
@@ -1056,6 +1079,7 @@ body{padding-bottom:110px!important}
   <div class="nb-strip" id="nbStrip" role="button" tabindex="0">
     <div class="nb-live"><i></i><span>LIVE</span></div>
     <div class="nb-txt"><div class="nb-cta" id="nbCta"></div><div class="nb-title" id="nbTitle">…</div><div class="nb-meta" id="nbMeta"></div></div>
+    <button type="button" class="nb-read nb-read-s" id="nbReadStrip" style="display:none">🔊</button>
     <div class="nb-chips" id="nbChips"></div>
     <div class="nb-chev">▲</div>
   </div>
@@ -1462,9 +1486,10 @@ function renderStrip(){
   q('nbCta').textContent=t('cta');
   const title=q('nbTitle'),meta=q('nbMeta'),chips=q('nbChips');chips.textContent='';
   if(!items.length){
-    title.textContent=failed?t('err'):t('live');meta.textContent='';return;
+    title.textContent=failed?t('err'):t('live');meta.textContent='';q('nbReadStrip').style.display='none';return;
   }
   const top=items.slice(0,5);const i=top[idx%top.length];
+  stripItem=i;const rs0=q('nbReadStrip');rs0.style.display='';rs0.dataset.id=String(i.id);markRead();
   title.textContent='';
   const b=badgeEl(i);if(b)title.appendChild(b);
   title.appendChild(document.createTextNode(dispTitle(i)));
@@ -1490,7 +1515,10 @@ function renderPanel(){
     a.appendChild(document.createTextNode(dispTitle(i)));d.appendChild(a);
     const m=document.createElement('div');m.className='nb-imeta';m.textContent=metaText(i);d.appendChild(m);
     const row=document.createElement('div');row.className='nb-chiprow';
-    row.appendChild(chip(t('gold'),i.g));row.appendChild(chip('BTC',i.b));d.appendChild(row);
+    row.appendChild(chip(t('gold'),i.g));row.appendChild(chip('BTC',i.b));
+    const rb=document.createElement('button');rb.type='button';rb.className='nb-read';rb.dataset.id=String(i.id);rb.dataset.lbl='1';
+    rb.addEventListener('click',e=>{e.stopPropagation();readNews(i)});row.appendChild(rb);
+    d.appendChild(row);
     if(i.why.length){
       const w=document.createElement('div');w.className='nb-why';
       const st=Math.max(level(i.g).str,level(i.b).str);
@@ -1499,12 +1527,119 @@ function renderPanel(){
     }
     list.appendChild(d);
   });
-  q('nbDisc').textContent=t('disc');
+  q('nbDisc').textContent=t('disc');markRead();
 }
 function render(){renderStrip();if(q('nb').classList.contains('open'))renderPanel()}
 
+/* ---------- read a headline aloud (tap the speaker button) ---------- */
+const READ_LBL={lo:'ຟັງຂ່າວ',th:'ฟังข่าว',en:'Listen'};
+function readLbl(){return READ_LBL[lang()]||READ_LBL.en}
+let readId=null,readAudio=null,readSeq=0,stripItem=null;
+const NEWS_RATE=1.2; /* reading speed of the news voice: 1 = normal, 1.2 = news-anchor pace. Change here to go faster / slower */
+function markRead(){document.querySelectorAll('.nb-read').forEach(b=>{const on=readId!=null&&b.dataset.id===String(readId);b.classList.toggle('on',on);b.textContent=(on?'⏹':'🔊')+(b.dataset.lbl?' '+readLbl():'')})}
+function stopRead(){readSeq++;readId=null;try{speechSynthesis.cancel()}catch(e){}try{if(readAudio){readAudio.onended=readAudio.onerror=null;readAudio.pause()}}catch(e){}markRead()}
+function doneRead(seq){if(seq===readSeq){readId=null;markRead()}}
+function chunkText(s,max){const out=[];s=String(s).replace(/\s+/g,' ').trim();while(s.length>max){let k=Math.max(s.lastIndexOf(' ',max),s.lastIndexOf('.',max),s.lastIndexOf(',',max));if(k<max*0.4)k=max;out.push(s.slice(0,k+1).trim());s=s.slice(k+1).trim()}if(s)out.push(s);return out}
+function sysRead(text,bcp,seq,onFail){
+  let failed=false;const fail=()=>{if(failed||seq!==readSeq)return;failed=true;try{speechSynthesis.cancel()}catch(e){}onFail()};
+  try{
+    speechSynthesis.cancel();speechSynthesis.resume&&speechSynthesis.resume();
+    const u=new SpeechSynthesisUtterance(text);u.lang=bcp;const v=pickVoice(bcp);if(v)u.voice=v;u.rate=NEWS_RATE;
+    let started=false;
+    u.onstart=()=>{started=true};
+    u.onend=()=>doneRead(seq);
+    u.onerror=()=>{if(!started)fail()};
+    speechSynthesis.speak(u);
+    setTimeout(()=>{if(!started)fail()},2200); /* system voice silent -> next option */
+  }catch(e){fail()}
+}
+function onlineRead(text,tl,seq,onFail){
+  const parts=chunkText(text,170);let k=0,failed=false;
+  const fail=()=>{if(failed||seq!==readSeq)return;failed=true;onFail()};
+  if(!readAudio)readAudio=new Audio();
+  const a=readAudio;a.defaultPlaybackRate=NEWS_RATE;a.playbackRate=NEWS_RATE;
+  const next=()=>{
+    if(seq!==readSeq)return;
+    if(k>=parts.length){doneRead(seq);return}
+    a.src='https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl='+tl+'&q='+encodeURIComponent(parts[k++]);
+    a.defaultPlaybackRate=NEWS_RATE;a.playbackRate=NEWS_RATE;
+    const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{if(k<=1)fail()});
+  };
+  a.onended=next;
+  a.onerror=()=>{if(seq!==readSeq)return;if(k<=1)fail();else next()};
+  next();
+}
+const VERDICT={
+ th:{g:'ทองคำ',b:'บิตคอยน์',up:'มีโอกาสขึ้น',down:'มีโอกาสลง',flat:'ยังไม่มีทิศทางชัดเจน',none:'ข่าวนี้ยังไม่มีผลชัดเจนต่อทองคำและบิตคอยน์',st:['เล็กน้อย','ปานกลาง','ค่อนข้างชัด'],sp:' ระดับ'},
+ en:{g:'Gold',b:'Bitcoin',up:'has a chance to rise',down:'has a chance to fall',flat:'has no clear direction',none:'This news has no clear effect on gold or Bitcoin.'},
+ zh:{g:'黄金',b:'比特币',up:'有上涨机会',down:'有下跌机会',flat:'方向不明确',none:'这条新闻对黄金和比特币没有明确影响。'},
+ ja:{g:'金',b:'ビットコイン',up:'上昇の可能性があります',down:'下落の可能性があります',flat:'方向感は不明確です',none:'このニュースは金とビットコインに明確な影響はありません。'},
+ ko:{g:'금',b:'비트코인',up:'상승 가능성이 있습니다',down:'하락 가능성이 있습니다',flat:'방향이 불분명합니다',none:'이 뉴스는 금과 비트코인에 뚜렷한 영향이 없습니다.'},
+ vi:{g:'Vàng',b:'Bitcoin',up:'có khả năng tăng',down:'có khả năng giảm',flat:'chưa rõ xu hướng',none:'Tin này chưa có tác động rõ ràng đến vàng và Bitcoin.'},
+ id:{g:'Emas',b:'Bitcoin',up:'berpeluang naik',down:'berpeluang turun',flat:'arah belum jelas',none:'Berita ini belum berdampak jelas pada emas dan Bitcoin.'},
+ ms:{g:'Emas',b:'Bitcoin',up:'berpeluang naik',down:'berpeluang turun',flat:'arah belum jelas',none:'Berita ini tiada kesan jelas terhadap emas dan Bitcoin.'},
+ es:{g:'El oro',b:'Bitcoin',up:'tiene posibilidad de subir',down:'tiene posibilidad de bajar',flat:'no tiene una dirección clara',none:'Esta noticia no tiene un efecto claro en el oro ni en Bitcoin.'},
+ fr:{g:'L’or',b:'Bitcoin',up:'a une chance de monter',down:'a une chance de baisser',flat:'n’a pas de direction claire',none:'Cette actualité n’a pas d’effet clair sur l’or ni sur Bitcoin.'},
+ de:{g:'Gold',b:'Bitcoin',up:'hat Chancen zu steigen',down:'hat Chancen zu fallen',flat:'hat keine klare Richtung',none:'Diese Nachricht hat keinen klaren Einfluss auf Gold oder Bitcoin.'},
+ pt:{g:'O ouro',b:'Bitcoin',up:'tem chance de subir',down:'tem chance de cair',flat:'não tem direção clara',none:'Esta notícia não tem efeito claro no ouro nem no Bitcoin.'},
+ ru:{g:'Золото',b:'Биткоин',up:'может вырасти',down:'может снизиться',flat:'без чёткого направления',none:'Эта новость не оказывает явного влияния на золото и биткоин.'},
+ ar:{g:'الذهب',b:'بيتكوين',up:'لديه فرصة للارتفاع',down:'لديه فرصة للانخفاض',flat:'بلا اتجاه واضح',none:'هذا الخبر ليس له تأثير واضح على الذهب والبيتكوين.'},
+ hi:{g:'सोना',b:'बिटकॉइन',up:'बढ़ने की संभावना है',down:'गिरने की संभावना है',flat:'दिशा स्पष्ट नहीं है',none:'इस खबर का सोने और बिटकॉइन पर कोई स्पष्ट असर नहीं है।'}
+};
+/* verdict comes from the SAME news classification as the ▲/▼ chips (i.g gold, i.b BTC), nothing invented */
+function verdictText(i,V){
+  const lg=level(i.g),lb=level(i.b);
+  if(lg.dir==='flat'&&lb.dir==='flat')return V.none;
+  const one=(name,l)=>name+' '+V[l.dir]+((V.st&&l.str)?V.sp+V.st[l.str-1]:'');
+  return one(V.g,lg)+'. '+one(V.b,lb)+'.';
+}
+async function readNews(i){
+  if(readId!=null&&String(readId)===String(i.id)){stopRead();return}
+  stopRead();const seq=readSeq;readId=i.id;markRead();
+  const L=lang(),SL=(L==='lo')?'th':L;   /* Lao is read in Thai */
+  const end=()=>doneRead(seq);
+  const play=(text,bcp,fallback)=>{const tl=bcp.split('-')[0];
+    if(hasVoiceFor(bcp))sysRead(text,bcp,seq,()=>onlineRead(text,tl,seq,fallback||end));
+    else onlineRead(text,tl,seq,fallback||end)};
+  const english=()=>{if(seq!==readSeq)return;play(i.title+'. '+verdictText(i,VERDICT.en),'en-US',end)};
+  let head=SL==='en'?i.title:(TR[SL+'|'+i.id]||'');
+  if(!head){const r=await trText(i.title,SL);if(seq!==readSeq)return;if(r){TR[SL+'|'+i.id]=r;saveTR();head=r}}
+  if(!head){english();return}
+  const V=VERDICT[SL]||VERDICT.en;
+  play(head+'. '+verdictText(i,V),VOICE_BCP[SL]||'en-US',SL==='en'?end:english);
+}
+
+/* long text reader (used by the "How to use" guide): system voice in chunks, online voice as fallback */
+function sysReadMany(parts,bcp,seq,onFail){
+  let k=0,failed=false;
+  const fail=()=>{if(failed||seq!==readSeq)return;failed=true;try{speechSynthesis.cancel()}catch(e){}onFail()};
+  const nextP=()=>{
+    if(seq!==readSeq||failed)return;
+    if(k>=parts.length){doneRead(seq);return}
+    const first=(k===0),u=new SpeechSynthesisUtterance(parts[k++]);u.lang=bcp;const v=pickVoice(bcp);if(v)u.voice=v;u.rate=NEWS_RATE;
+    let started=false;
+    u.onstart=()=>{started=true};
+    u.onend=nextP;
+    u.onerror=()=>{if(seq!==readSeq)return;if(!started&&first)fail();else nextP()};
+    try{speechSynthesis.speak(u)}catch(e){fail();return}
+    if(first)setTimeout(()=>{if(!started)fail()},2200);
+  };
+  try{speechSynthesis.cancel();speechSynthesis.resume&&speechSynthesis.resume()}catch(e){}
+  nextP();
+}
+window.gvReadAloud=function(text,SL,key){
+  if(readId!=null&&String(readId)===key){stopRead();return}
+  stopRead();const seq=readSeq;readId=key;markRead();
+  const bcp=VOICE_BCP[SL]||'en-US',tl=bcp.split('-')[0],end=()=>doneRead(seq);
+  const online=()=>{if(seq!==readSeq)return;onlineRead(text,tl,seq,end)};
+  if(hasVoiceFor(bcp))sysReadMany(chunkText(text,200),bcp,seq,online);else online();
+};
+window.gvStopRead=stopRead;
+window.gvReadingKey=function(){return readId};
+
 /* ---------- events ---------- */
 const nb=q('nb');
+q('nbReadStrip').addEventListener('click',e=>{e.stopPropagation();if(stripItem)readNews(stripItem)});
 function toggle(open){nb.classList.toggle('open',open===undefined?!nb.classList.contains('open'):open);if(nb.classList.contains('open'))renderPanel()}
 q('nbStrip').addEventListener('click',()=>{if(failed&&!items.length){load();return}toggle()});
 q('nbStrip').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}});
@@ -1945,7 +2080,11 @@ window.__nbClassify=classify;
     clearOver();
     var T=R.trade;
     if(T){
-      var t0=ts[T.start],t1=tAt(T.end);
+      var t0=ts[T.start],t1=tAt(n-1+P.offset); /* zones + lines stay on screen until a NEW signal replaces this trade */
+      var PS=(window.GV_PTS&&window.GV_PTS[sym])||1,PU='point';
+      var pp=function(price){return Math.round(Math.abs(Math.round(price*100)/100-Math.round(T.entry*100)/100)/PS)};
+      var el=function(ix){var m=Math.round((ts[ix]-ts[T.start])/60);return m<60?m+'m':Math.floor(m/60)+'h'+(m%60?' '+m%60+'m':'')};
+      var lab=function(name,price,hit,bad){return name+(hit>=0?(bad?' ✕':' ✓'):'')+' '+(bad?'-':'+')+pp(price)+' '+PU+(hit>=0?' · '+el(hit):'')};
       var zone=function(val,fill){
         var z=chart.addBaselineSeries({baseValue:{type:'price',price:T.entry},
           topFillColor1:fill,topFillColor2:fill,bottomFillColor1:fill,bottomFillColor2:fill,
@@ -1960,10 +2099,10 @@ window.__nbClassify=classify;
         l.setData([{time:t0,value:price},{time:tAt(n-1+50),value:price}]);over.push(l);
       };
       line(T.entry,C.entry,2,false,'ENTRY');
-      line(T.sl,C.sl,2,false,T.slHit>=0?'SL ✕':'SL');
-      line(T.tp[0],C.exit,2,false,T.tpHit[0]>=0?'TP1 ✓':'TP1');
-      line(T.tp[1],C.exit,2,false,T.tpHit[1]>=0?'TP2 ✓':'TP2');
-      line(T.tp[2],C.exit,2,false,T.tpHit[2]>=0?'TP3 ✓':'TP3');
+      line(T.sl,C.sl,2,false,lab('SL',T.sl,T.slHit,true));
+      line(T.tp[0],C.exit,2,false,lab('TP1',T.tp[0],T.tpHit[0]));
+      line(T.tp[1],C.exit,2,false,lab('TP2',T.tp[1],T.tpHit[1]));
+      line(T.tp[2],C.exit,2,false,lab('TP3',T.tp[2],T.tpHit[2]));
     }
 
     var lastC=bars[n-1].c;
@@ -2350,7 +2489,28 @@ window.__nbClassify=classify;
   function render(){var g=L();btnTxt.textContent=g.btn;title.textContent=g.title;
     body.innerHTML=g.html+(g.note?'<div class="guide-note">'+g.note+'</div>':'')}
   function open(){render();modal.hidden=false;document.body.style.overflow='hidden';body.scrollTop=0}
-  function close(){modal.hidden=true;document.body.style.overflow=''}
+  function close(){modal.hidden=true;document.body.style.overflow='';try{window.gvStopRead&&window.gvStopRead()}catch(e){}}
+  /* read the guide aloud: Lao is read in Thai (Thai guide text) */
+  var RLL={lo:'ຟັງວິທີໃຊ້ງານ (ກົດອີກຄັ້ງເພື່ອຢຸດ / ຟັງຊ້ຳ)',th:'ฟังวิธีใช้งาน (กดอีกครั้งเพื่อหยุด / ฟังซ้ำ)',en:'Listen to the guide (tap again to stop / replay)'};
+  var rb=document.createElement('button');rb.type='button';rb.id='guideRead';rb.className='guide-read';
+  if(modal.parentNode!==document.body)document.body.appendChild(modal); /* a parent has backdrop-filter: fixed would follow the page scroll and hide the header */
+  var card=modal.querySelector('.guide-card'),ft=document.createElement('div');ft.className='guide-foot';ft.appendChild(rb);if(card)card.appendChild(ft);
+  function curL(){return (typeof currentLang!=='undefined'?currentLang:'lo')}
+  function speakLang(){var l=curL();return l==='lo'?'th':(G[l]?l:'en')}
+  function plain(){
+    var SL=speakLang(),g=G[SL]||G.en,d=document.createElement('div');
+    var h='<p>'+g.title+'</p>'+g.html+(g.note?'<p>'+g.note+'</p>':'');
+    h=h.replace(/<br\s*\/?>/g,'. ').replace(/<\/(li|h4|p)>/g,'. </$1>');
+    d.innerHTML=h;
+    return (d.textContent||'').replace(/[➜✓✕✗★▲▼•→]/g,' ').replace(/\s+/g,' ').replace(/(\.\s*){2,}/g,'. ').trim();
+  }
+  function paintRead(){
+    var on=window.gvReadingKey&&window.gvReadingKey()==='guide';
+    rb.classList.toggle('on',!!on);
+    rb.textContent=(on?'⏹ ':'🔊 ')+(RLL[curL()]||RLL.en);
+  }
+  rb.addEventListener('click',function(e){e.stopPropagation();if(!window.gvReadAloud)return;window.gvReadAloud(plain(),speakLang(),'guide');paintRead()});
+  setInterval(paintRead,400);paintRead();
   btn.addEventListener('click',function(e){e.stopPropagation();open()});
   document.getElementById('guideClose').addEventListener('click',close);
   modal.addEventListener('click',function(e){if(e.target===modal)close()});
@@ -2378,6 +2538,9 @@ window.__nbClassify=classify;
 /* Trade statistics: every BUY / SELL signal of the Gavin - Trade indicator is recorded with its own TP1 / TP2 / TP3 / SL result and exact time */
 (function(){
   var KEY='gavin_tstats_v1',MAXREC=1500,KEEP=1200,PAGE=40;
+  /* size of 1 point in price, same as MT5 (Exness): XAUUSD 1 point = 0.01 USD, BTCUSD 1 point = 0.01 USD (2 digits). Change here if your symbol spec differs */
+  var PTS={'XAU/USD':0.01,'BTC/USD':0.01};
+  window.GV_PTS=PTS;
   var $g=function(i){return document.getElementById(i)};
   var btn=$g('tsBtn'),modal=$g('tsModal');
   if(!btn||!modal)return;
@@ -2403,6 +2566,9 @@ window.__nbClassify=classify;
   ar:{btn:"إحصائيات التداول",title:"إحصائيات إشارات Gavin - Trade",sub:"كل إشارة ونتيجتها TP / SL • توقيت GMT+7",wr:"نسبة الربح",w:"أرباح",l:"خسائر",net:"الصافي (R)",n:"الإشارات",pf:"عامل الربح",sw:"أطول سلسلة أرباح",sls:"أطول سلسلة خسائر",reach:"الأهداف التي تم بلوغها",allSym:"كل الأزواج",allTf:"كل الأطر الزمنية",allRes:"كل النتائج",rwin:"Win",rloss:"Loss",ropen:"قيد التنفيذ",rexp:"منتهية",empty:"لا توجد إشارات مسجلة بعد — أدخل API Key وانتظر تحميل المخطط",more:"عرض المزيد",csv:"تصدير CSV",clear:"مسح السجل",confirm:"مسح كل الإحصائيات؟ ستُحتسب الإشارات الجديدة فقط من الآن.",sigc:"شمعة الإشارة",ent:"الدخول (إغلاق الشمعة)",dur:"المدة",risk:"المخاطرة 1R",outc:"النتيجة",notr:"لم يتحقق",same:"تم لمس TP وSL في نفس الشمعة — تُحتسب Loss",gap:"فجوة في البيانات — النتيجة النهائية غير معروفة",expn:"استُبدلت بإشارة جديدة قبل TP / SL — تُحتسب R بسعر الإشارة الجديدة",runn:"لا تزال قيد التنفيذ — R عائمة (لم تُحتسب بعد)",note:"Win = لمس السعر أحد TP قبل SL (1R / 2R / 3R بحسب أعلى TP تم لمسه). Loss = لمس SL أولاً (‎-1R). TP وSL في نفس الشمعة تُحتسب Loss. الإشارة التي تُستبدل بأخرى قبل لمس TP / SL تُعد «منتهية». مبني على بيانات شموع حقيقية وقواعد المؤشر؛ لا يشمل السبريد / الرسوم؛ لا يُضمن أي ربح. كل الأوقات بتوقيت GMT+7."},
   hi:{btn:"ट्रेड आँकड़े",title:"Gavin - Trade सिग्नल आँकड़े",sub:"हर सिग्नल और उसका TP / SL नतीजा • समय GMT+7",wr:"जीत दर",w:"जीत",l:"हार",net:"नेट (R)",n:"सिग्नल",pf:"प्रॉफ़िट फ़ैक्टर",sw:"सबसे लंबी जीत की लकीर",sls:"सबसे लंबी हार की लकीर",reach:"हर लक्ष्य तक पहुँच",allSym:"सभी पेयर",allTf:"सभी TF",allRes:"सभी नतीजे",rwin:"Win",rloss:"Loss",ropen:"चल रहा है",rexp:"समाप्त",empty:"अभी कोई सिग्नल दर्ज नहीं — API Key डालें और चार्ट लोड होने का इंतज़ार करें",more:"और देखें",csv:"CSV निर्यात",clear:"इतिहास मिटाएँ",confirm:"सारे आँकड़े मिटाएँ? अब से केवल नए सिग्नल गिने जाएँगे।",sigc:"सिग्नल कैंडल",ent:"एंट्री (कैंडल क्लोज़)",dur:"अवधि",risk:"जोखिम 1R",outc:"नतीजा",notr:"नहीं पहुँचा",same:"TP और SL एक ही कैंडल में लगे — Loss गिना गया",gap:"डेटा गायब — अंतिम नतीजा अज्ञात",expn:"TP / SL से पहले नए सिग्नल ने बदल दिया — R नए सिग्नल की कीमत पर लिया गया",runn:"अभी चल रहा है — R अस्थायी है (अभी गिना नहीं गया)",note:"Win = कीमत SL से पहले किसी TP को छूए (छुए गए सबसे ऊँचे TP के अनुसार 1R / 2R / 3R)। Loss = पहले SL छुआ (-1R)। एक ही कैंडल में TP और SL को Loss गिना जाता है। TP / SL छूने से पहले नए सिग्नल से बदला गया सिग्नल \"समाप्त\" है। असली कैंडल डेटा और इंडिकेटर नियमों पर आधारित; स्प्रेड / शुल्क शामिल नहीं; किसी मुनाफ़े की गारंटी नहीं। सभी समय GMT+7।"}
   };
+  Object.assign(X.lo,{pt:'point',tm:'ເວລາ',avg:'ສະເລ່ຍ',sy_on:'ຊິງຄ໌ MT5 ແລ້ວ — ລາຄາຕົງກັບໂບກເກີ (ຄ່າຊົດເຊີຍ {o})',sy_off:'ຍັງບໍ່ໄດ້ຊິງຄ໌ MT5 — ລາຄາເປັນຂອງ feed (ໃສ່ລາຄາ MT5 ແລ້ວກົດຊິງຄ໌ ໜ້າຫຼັກກ່ອນ)',tpt:'ເວລາ ແລະ ຈຸດ ນັບຈາກຈຸດເຂົ້າອໍເດີ'});
+  Object.assign(X.th,{pt:'point',tm:'เวลา',avg:'เฉลี่ย',sy_on:'ซิงค์ MT5 แล้ว — ราคาตรงกับโบรกเกอร์ (ค่าชดเชย {o})',sy_off:'ยังไม่ได้ซิงค์ MT5 — ราคาเป็นของ feed (ใส่ราคา MT5 แล้วกดซิงค์ที่หน้าหลักก่อน)',tpt:'เวลาและจุดนับจากจุดเข้าออเดอร์'});
+  Object.assign(X.en,{pt:'point',tm:'Time',avg:'avg',sy_on:'MT5 synced — prices match the broker (offset {o})',sy_off:'MT5 not synced — prices are feed prices (enter the MT5 price and tap sync on the main screen first)',tpt:'Time and points are counted from the entry point'});
   function lang(){return (typeof currentLang!=='undefined'?currentLang:'lo')}
   function t(k){var d=X[lang()];return (d&&d[k]!=null)?d[k]:X.en[k]}
 
@@ -2443,11 +2609,26 @@ window.__nbClassify=classify;
   function r2(v){return Math.round(v*100)/100}
   function fm(v){return Number(v).toFixed(2)}
   function fr(v){v=r2(v);return (v>0?'+':'')+v+'R'}
+  /* broker price = feed price + MT5 offset (same offset the chart / main panel use); records keep the offset they were saved with */
+  function curOff(s){return +(window.getPriceOff?window.getPriceOff(s):0)||0}
+  function adj(r,v){return v+curOff(r.s)-(r.o||0)}
+  function pts(r,a,b){var q=function(v){return Math.round(adj(r,v)*100)/100};return Math.round(Math.abs(q(a)-q(b))/(PTS[r.s]||1))} /* points between the 2-decimal prices, like MT5 */
+  function durM(m){m=Math.round(m);if(m<60)return m+'m';var h=Math.floor(m/60),x=m%60;if(h<24)return h+'h'+(x?' '+p2(x)+'m':'');var d=Math.floor(h/24);return d+'d'+(h%24?' '+(h%24)+'h':'')}
+  function syncLine(){
+    var seen={},k,out=[];
+    for(k in D.m){var r=D.m[k];if(fSym!=='all'&&r.s!==fSym)continue;seen[r.s]=1}
+    Object.keys(seen).sort().forEach(function(sy){
+      var o=curOff(sy),on=(function(){try{return sy in JSON.parse(localStorage.getItem('gavin_mt5_off')||'{}')}catch(e){return false}})();
+      out.push('<div class="ts-sync'+(on?'':' off')+'"><b>'+esc(sy)+'</b> · '+esc(on?t('sy_on').replace('{o}',(o>=0?'+':'')+Number(o.toFixed(2))):t('sy_off'))+'</div>');
+    });
+    return out.join('');
+  }
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
   /* ---------- build records from the indicator trades ---------- */
   function build(info){
     var bars=info.bars,n=bars.length,out=[];
+    var off=+(window.getPriceOff?window.getPriceOff(info.sym):0)||0;
     (info.all||[]).forEach(function(T){
       var i0=T.start;
       if(i0>=n-1)return; /* signal candle is still forming: not recorded yet (it can still disappear) */
@@ -2467,7 +2648,7 @@ window.__nbClassify=classify;
       else{st='open';xp=bars[n-1].c;r=T.dir*(xp-T.entry)/risk}
       out.push({k:info.sym+'|'+info.tf+'|'+bars[i0].t,s:info.sym,f:info.tf,d:T.dir===1?'BUY':'SELL',t:bars[i0].t,
         e:r2(T.entry),sl:r2(T.sl),p:[r2(T.tp[0]),r2(T.tp[1]),r2(T.tp[2])],h:H,
-        st:st,b:best,r:r2(r),x:x,xp:r2(xp),run:run,sm:(best===0&&same)?1:0});
+        st:st,b:best,r:r2(r),x:x,xp:r2(xp),run:run,sm:(best===0&&same)?1:0,o:off});
     });
     return out;
   }
@@ -2504,9 +2685,9 @@ window.__nbClassify=classify;
     return a;
   }
   function calc(a){
-    var c={w:0,l:0,o:0,e:0,net:0,gp:0,gl:0,reach:[0,0,0],sl:0,sw:0,sls:0},cw=0,cl=0;
+    var c={w:0,l:0,o:0,e:0,net:0,gp:0,gl:0,reach:[0,0,0],tm:[0,0,0],tn:[0,0,0],sl:0,sw:0,sls:0},cw=0,cl=0;
     a.slice().reverse().forEach(function(r){
-      if(r.st==='win'){c.w++;c.net+=r.r;c.gp+=r.r;for(var k=0;k<r.b;k++)c.reach[k]++;cw++;cl=0;if(cw>c.sw)c.sw=cw}
+      if(r.st==='win'){c.w++;c.net+=r.r;c.gp+=r.r;for(var k=0;k<r.b;k++){c.reach[k]++;if(r.h[k]){c.tm[k]+=(ms(r.h[k])-ms(r.t))/60000;c.tn[k]++}}cw++;cl=0;if(cw>c.sw)c.sw=cw}
       else if(r.st==='loss'){c.l++;c.net-=1;c.gl+=1;c.sl++;cl++;cw=0;if(cl>c.sls)c.sls=cl}
       else if(r.st==='exp'){c.e++;c.net+=r.r;if(r.r>0)c.gp+=r.r;else c.gl-=r.r}
       else c.o++;
@@ -2545,12 +2726,14 @@ window.__nbClassify=classify;
       [t('sw'),c.sw,''],[t('sls'),c.sls,'']
     ];
     $g('tsSum').innerHTML=cells.map(function(x){return '<div class="ts-k"><small>'+esc(x[0])+'</small><b class="'+x[2]+'">'+x[1]+'</b></div>'}).join('');
-    var bars=[['TP1',c.reach[0],'ts-tp'],['TP2',c.reach[1],'ts-tp'],['TP3',c.reach[2],'ts-tp'],['SL',c.sl,'ts-sl']];
+    var av=function(k){return c.tn[k]?c.tm[k]/c.tn[k]:null};
+    var bars=[['TP1',c.reach[0],'ts-tp',av(0)],['TP2',c.reach[1],'ts-tp',av(1)],['TP3',c.reach[2],'ts-tp',av(2)],['SL',c.sl,'ts-sl',null]];
     $g('tsDist').innerHTML='<div class="t"><span>'+esc(t('reach'))+'</span><span>'+esc(t('ropen'))+' '+c.o+' · '+esc(t('rexp'))+' '+c.e+'</span></div><div class="ts-bars">'+
-      bars.map(function(x){var pc=cl?Math.round(x[1]/cl*100):0;return '<div class="ts-bar '+x[2]+'"><div class="n">'+x[1]+' <small style="font-size:9.5px;opacity:.75">'+pc+'%</small></div><div class="tr"><i style="width:'+pc+'%"></i></div><div class="lb">'+x[0]+'</div></div>'}).join('')+'</div>';
+      bars.map(function(x){var pc=cl?Math.round(x[1]/cl*100):0;return '<div class="ts-bar '+x[2]+'"><div class="n">'+x[1]+' <small style="font-size:9.5px;opacity:.75">'+pc+'%</small></div><div class="tr"><i style="width:'+pc+'%"></i></div><div class="lb">'+x[0]+'</div>'+(x[3]!=null?'<div class="av">⏱ '+esc(t('avg'))+' '+esc(durM(x[3]))+'</div>':'')+'</div>'}).join('')+'</div>'+syncLine();
   }
-  function chip(label,when,base,sl){
-    return '<div class="ts-chip'+(sl?' sl':'')+(when?' hit':'')+'"><b>'+label+(when?(sl?' ✕':' ✓'):'')+'</b><span>'+(when?esc(fs(when,base)):'—')+'</span></div>';
+  function chip(label,when,base,sl,e1,e2){
+    return '<div class="ts-chip'+(sl?' sl':'')+(when?' hit':'')+'"><b>'+label+(when?(sl?' ✕':' ✓'):'')+'</b><span>'+(when?esc(fs(when,base)):'—')+'</span>'+
+      (when&&e1?'<span class="el2">⏱ '+esc(e1)+'</span>':'')+(when&&e2?'<span class="pp">'+esc(e2)+'</span>':'')+'</div>';
   }
   function row(cls,label,val,el){return '<div class="ts-row '+cls+'"><span>'+label+'</span><b>'+val+(el?'<span class="el">'+esc(el)+'</span>':'')+'</b></div>'}
   function card(r,i){
@@ -2563,20 +2746,21 @@ window.__nbClassify=classify;
     var h='<div class="ts-item '+r.st+'" data-i="'+i+'"><div class="ts-r1"><div class="ts-l1"><span class="ts-dir '+r.d.toLowerCase()+'">'+r.d+'</span><span class="ts-pair">'+esc(r.s.replace('/',''))+' <span>'+(TFL[r.f]||r.f)+'</span></span></div>'+
       '<div class="ts-res"><span class="ts-pill '+r.st+'">'+pill+'</span><span class="ts-rv '+rc+'">'+rv+'</span></div></div>'+
       '<div class="ts-when">'+esc(when)+'</div>'+
-      '<div class="ts-chips">'+chip('TP1',r.h[0],r.t)+chip('TP2',r.h[1],r.t)+chip('TP3',r.h[2],r.t)+chip('SL',r.h[3],r.t,1)+'</div>';
+      '<div class="ts-chips">'+[0,1,2].map(function(k){return chip('TP'+(k+1),r.h[k],r.t,0,dur(r.t,r.h[k]),'+'+pts(r,r.p[k],r.e)+' '+t('pt'))}).join('')+chip('SL',r.h[3],r.t,1,dur(r.t,r.h[3]),'-'+pts(r,r.e,r.sl)+' '+t('pt'))+'</div>';
     if(isOpen){
       var daily=r.f==='D',ent=daily?fd(r.t):fd(addMin(r.t,+r.f));
       h+='<div class="ts-det">'+
         row('',esc(t('sigc')),esc(fd(r.t)))+
-        row('',esc(t('ent')),esc(ent)+' @ '+fm(r.e))+
-        row('',esc(t('risk')),fm(Math.abs(r.e-r.sl)))+
+        row('',esc(t('ent')),esc(ent)+' @ '+fm(adj(r,r.e)))+
+        row('',esc(t('risk')),fm(Math.abs(r.e-r.sl)),pts(r,r.e,r.sl)+' '+t('pt'))+
         '<div class="ts-sep"></div>';
       for(var k=0;k<3;k++){
         var hit=r.h[k];
-        h+=row(hit?'hit':'off','TP'+(k+1)+' · '+(k+1)+'R',hit?fm(r.p[k])+' · '+esc(fd(hit)):esc(t('notr')),hit?dur(r.t,hit):'');
+        h+=row(hit?'hit':'off','TP'+(k+1)+' · '+(k+1)+'R',hit?fm(adj(r,r.p[k]))+' · '+esc(fd(hit)):esc(t('notr')),hit?dur(r.t,hit)+' · +'+pts(r,r.p[k],r.e)+' '+t('pt'):'');
       }
-      h+=row(r.h[3]?'slh':'off','SL · -1R',r.h[3]?fm(r.sl)+' · '+esc(fd(r.h[3])):esc(t('notr')),r.h[3]?dur(r.t,r.h[3]):'');
+      h+=row(r.h[3]?'slh':'off','SL · -1R',r.h[3]?fm(adj(r,r.sl))+' · '+esc(fd(r.h[3])):esc(t('notr')),r.h[3]?dur(r.t,r.h[3])+' · -'+pts(r,r.e,r.sl)+' '+t('pt'):'');
       h+='<div class="ts-sep"></div>';
+      h+='<div class="ts-warn" style="background:rgba(255,255,255,.04);color:#8a97a8">'+esc(t('tpt'))+'</div>';
       if(r.x)h+=row('',esc(t('dur')),esc(dur(r.t,r.x)||'—'));
       h+=row('',esc(t('outc')),'<span style="color:'+(r.st==='win'?'#20e38a':r.st==='loss'?'#ff5d6c':'#9aa6b6')+'">'+pill+' · '+(r.g?'—':rv)+'</span>');
       if(r.sm)h+='<div class="ts-warn">'+esc(t('same'))+'</div>';
@@ -2609,8 +2793,10 @@ window.__nbClassify=classify;
   function closeM(){modal.hidden=true;document.body.style.overflow=''}
   function csv(){
     var a=list(true),q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'};
-    var H=['Pair','TF','Side','Signal time (GMT+7)','Entry','SL','TP1','TP2','TP3','Result','Best TP','R','TP1 time','TP2 time','TP3 time','SL time','Result time'];
-    var rows=[H].concat(a.map(function(r){return [r.s,TFL[r.f]||r.f,r.d,r.t,r.e,r.sl,r.p[0],r.p[1],r.p[2],r.st.toUpperCase(),r.b||'',r.g?'':r.r,r.h[0]||'',r.h[1]||'',r.h[2]||'',r.h[3]||'',r.x||'']}));
+    var H=['Pair','TF','Side','Signal time (GMT+7)','Entry','SL','TP1','TP2','TP3','Result','Best TP','R','TP1 time','TP2 time','TP3 time','SL time','Result time','TP1 point','TP2 point','TP3 point','SL point','TP1 elapsed','TP2 elapsed','TP3 elapsed','SL elapsed'];
+    var rows=[H].concat(a.map(function(r){return [r.s,TFL[r.f]||r.f,r.d,r.t,fm(adj(r,r.e)),fm(adj(r,r.sl)),fm(adj(r,r.p[0])),fm(adj(r,r.p[1])),fm(adj(r,r.p[2])),r.st.toUpperCase(),r.b||'',r.g?'':r.r,r.h[0]||'',r.h[1]||'',r.h[2]||'',r.h[3]||'',r.x||'',
+      r.h[0]?pts(r,r.p[0],r.e):'',r.h[1]?pts(r,r.p[1],r.e):'',r.h[2]?pts(r,r.p[2],r.e):'',r.h[3]?pts(r,r.e,r.sl):'',
+      r.h[0]?dur(r.t,r.h[0]):'',r.h[1]?dur(r.t,r.h[1]):'',r.h[2]?dur(r.t,r.h[2]):'',r.h[3]?dur(r.t,r.h[3]):'']}));
     var blob=new Blob(['\ufeff'+rows.map(function(r){return r.map(q).join(',')}).join('\r\n')],{type:'text/csv;charset=utf-8'});
     var u=URL.createObjectURL(blob),el=document.createElement('a');
     el.href=u;el.download='gavin-trade-stats.csv';document.body.appendChild(el);el.click();
@@ -2818,8 +3004,11 @@ window.__nbClassify=classify;
     var chip=function(ok,i){return{c:ok===true?'y':'n',s:(ok===true?'✓ ':ok===false?'✗ ':'… ')+tx(i)}};
     var chips=[chip(closed?true:null,12),chip(near,13),chip(young,14),chip(fresh,15)];
     /* real TP / SL results, same hits the chart labels show (TP1 ✓ / SL ✕) */
-    var res=[{c:tp[0]>=0?'y':'',s:(tp[0]>=0?'✓ ':'')+'TP1'},{c:tp[1]>=0?'y':'',s:(tp[1]>=0?'✓ ':'')+'TP2'},
-             {c:tp[2]>=0?'y':'',s:(tp[2]>=0?'✓ ':'')+'TP3'},{c:sl>=0?'r':'',s:(sl>=0?'✕ ':'')+'SL'}];
+    var symK=String(st.key||'').split('|')[0],PS=(window.GV_PTS&&window.GV_PTS[symK])||1,L0=(typeof currentLang!=='undefined'?currentLang:'lo'),PU='point';
+    var pp=function(p){return Math.round(Math.abs(Math.round(p*100)/100-Math.round(T0.entry*100)/100)/PS)};
+    var el=function(ix){var m=Math.round((ts[ix]-ts[T0.start])/60);return m<60?m+'m':Math.floor(m/60)+'h'+(m%60?' '+m%60+'m':'')};
+    var rc=function(name,k){var h=tp[k];return{c:h>=0?'y':'',s:(h>=0?'✓ ':'')+name+' '+(h>=0?'+'+pp(T0.tp[k])+' '+PU+' · '+el(h):'+'+pp(T0.tp[k]))}};
+    var res=[rc('TP1',0),rc('TP2',1),rc('TP3',2),{c:sl>=0?'r':'',s:(sl>=0?'✕ ':'')+'SL '+(sl>=0?'-'+pp(T0.sl)+' '+PU+' · '+el(sl):'-'+pp(T0.sl))}];
     var sub=entryWord()+' '+T0.entry.toFixed(2)+' · '+(moveR>=0?'+':'')+moveR.toFixed(2)+'R · '+String(bars[T0.start].t).slice(0,16);
     var V={chart:curKey(),id:curKey()+'|'+bars[T0.start].t+'|'+d,d:d,tp:[tp[0]>=0,tp[1]>=0,tp[2]>=0],sl:sl>=0,conf:false};
     var r=function(cls,main){V.conf=(cls==='buy'||cls==='sell');return{cls:cls,main:main,sub:sub,chips:chips,res:res,v:V}};
@@ -2858,7 +3047,7 @@ window.__nbClassify=classify;
 <div class="gv-copy" id="gvCopy"></div>
 <script id="gv-gate-script">
 (function(){
-  var HASH="b1537a36cbe504633c6bd7232d9fd6f71d1cf6db0eecf0b9d720bdedf0be2661",SK='gv_unlocked',G={"lo": {"sub": "ລະບົບວິເຄາະສັນຍານ FOREX ລະດັບ Premium", "ph": "ໃສ່ລະຫັດເຂົ້າແອັບ", "btn": "ເຂົ້າສູ່ລະບົບ", "err": "ລະຫັດບໍ່ຖືກຕ້ອງ", "lock": "ລອງຜິດຫຼາຍເກີນໄປ ກະລຸນາລໍຖ້າ {s} ວິນາທີ", "pro": "ໂປຣທົດລອງໃຊ້ຟຣີ", "copy": "ສະຫງວນລິຂະສິດ Gavin Trade · ເຈົ້າຂອງພຽງຜູ້ດຽວ ຫ້າມລອກລຽນແບບ ຫຼື ເອົາໄປເຜີຍແຜ່ໂດຍບໍ່ໄດ້ຮັບອະນຸຍາດ"}, "th": {"sub": "ระบบวิเคราะห์สัญญาณ FOREX ระดับพรีเมียม", "ph": "ใส่รหัสเข้าแอป", "btn": "เข้าสู่ระบบ", "err": "รหัสไม่ถูกต้อง", "lock": "ลองผิดหลายครั้งเกินไป กรุณารอ {s} วินาที", "pro": "โปรทดลองใช้ฟรี", "copy": "สงวนลิขสิทธิ์ Gavin Trade · เจ้าของเพียงผู้เดียว ห้ามคัดลอก เลียนแบบ หรือนำไปเผยแพร่โดยไม่ได้รับอนุญาต"}, "en": {"sub": "Premium FOREX signal analysis", "ph": "Enter app passcode", "btn": "LOG IN", "err": "Incorrect passcode", "lock": "Too many attempts. Wait {s}s", "pro": "Pro free trial", "copy": "© Gavin Trade · Sole owner. Copying, imitating or distributing without permission is prohibited"}, "zh": {"sub": "高级 FOREX 信号分析系统", "ph": "输入应用密码", "btn": "登录", "err": "密码错误", "lock": "尝试次数过多，请等待 {s} 秒", "pro": "Pro 免费试用", "copy": "版权所有 Gavin Trade · 唯一所有者，未经许可禁止复制、仿冒或传播"}, "ja": {"sub": "プレミアム FOREX シグナル分析", "ph": "アプリのパスコードを入力", "btn": "ログイン", "err": "パスコードが違います", "lock": "試行回数が多すぎます。{s}秒お待ちください", "pro": "Pro 無料トライアル", "copy": "著作権 Gavin Trade · 唯一の所有者。無断複製・模倣・配布を禁じます"}, "ko": {"sub": "프리미엄 FOREX 신호 분석", "ph": "앱 암호를 입력하세요", "btn": "로그인", "err": "암호가 올바르지 않습니다", "lock": "시도 횟수 초과. {s}초 후 다시 시도하세요", "pro": "Pro 무료 체험", "copy": "저작권 Gavin Trade · 단독 소유자. 무단 복제·모방·배포를 금지합니다"}, "vi": {"sub": "Phân tích tín hiệu FOREX cao cấp", "ph": "Nhập mật mã vào ứng dụng", "btn": "ĐĂNG NHẬP", "err": "Mật mã không đúng", "lock": "Thử sai quá nhiều. Vui lòng chờ {s} giây", "pro": "Dùng thử Pro miễn phí", "copy": "Bản quyền Gavin Trade · Chủ sở hữu duy nhất. Cấm sao chép, bắt chước hoặc phát tán khi chưa được phép"}, "id": {"sub": "Analisis sinyal FOREX premium", "ph": "Masukkan kode akses aplikasi", "btn": "MASUK", "err": "Kode salah", "lock": "Terlalu banyak percobaan. Tunggu {s} detik", "pro": "Uji coba Pro gratis", "copy": "Hak cipta Gavin Trade · Pemilik tunggal. Dilarang menyalin, meniru, atau menyebarkan tanpa izin"}, "ms": {"sub": "Analisis isyarat FOREX premium", "ph": "Masukkan kod akses aplikasi", "btn": "LOG MASUK", "err": "Kod salah", "lock": "Terlalu banyak percubaan. Tunggu {s} saat", "pro": "Percubaan Pro percuma", "copy": "Hak cipta Gavin Trade · Pemilik tunggal. Dilarang menyalin, meniru atau menyebarkan tanpa kebenaran"}, "es": {"sub": "Análisis premium de señales FOREX", "ph": "Introduce el código de acceso", "btn": "INICIAR SESIÓN", "err": "Código incorrecto", "lock": "Demasiados intentos. Espera {s} s", "pro": "Prueba gratuita Pro", "copy": "© Gavin Trade · Único propietario. Prohibido copiar, imitar o distribuir sin autorización"}, "fr": {"sub": "Analyse premium des signaux FOREX", "ph": "Saisissez le code d’accès", "btn": "CONNEXION", "err": "Code incorrect", "lock": "Trop de tentatives. Patientez {s} s", "pro": "Essai Pro gratuit", "copy": "© Gavin Trade · Seul propriétaire. Copie, imitation ou diffusion interdites sans autorisation"}, "de": {"sub": "Premium FOREX-Signalanalyse", "ph": "App-Code eingeben", "btn": "ANMELDEN", "err": "Falscher Code", "lock": "Zu viele Versuche. Bitte {s} s warten", "pro": "Pro kostenlos testen", "copy": "© Gavin Trade · Alleiniger Inhaber. Kopieren, Nachahmen oder Verbreiten ohne Erlaubnis verboten"}, "pt": {"sub": "Análise premium de sinais FOREX", "ph": "Digite o código de acesso", "btn": "ENTRAR", "err": "Código incorreto", "lock": "Muitas tentativas. Aguarde {s} s", "pro": "Teste Pro grátis", "copy": "© Gavin Trade · Único proprietário. Proibido copiar, imitar ou distribuir sem autorização"}, "ru": {"sub": "Премиум-анализ сигналов FOREX", "ph": "Введите код доступа", "btn": "ВОЙТИ", "err": "Неверный код", "lock": "Слишком много попыток. Подождите {s} с", "pro": "Pro — бесплатный пробный период", "copy": "© Gavin Trade · Единственный владелец. Копирование, подражание и распространение без разрешения запрещены"}, "ar": {"sub": "تحليل إشارات FOREX بمستوى بريميوم", "ph": "أدخل رمز الدخول إلى التطبيق", "btn": "تسجيل الدخول", "err": "الرمز غير صحيح", "lock": "محاولات كثيرة. انتظر {s} ثانية", "pro": "تجربة Pro مجانية", "copy": "حقوق النشر Gavin Trade · المالك الوحيد. يُمنع النسخ أو التقليد أو النشر دون إذن"}, "hi": {"sub": "प्रीमियम FOREX सिग्नल विश्लेषण", "ph": "ऐप का पासकोड डालें", "btn": "लॉग इन", "err": "गलत पासकोड", "lock": "बहुत ज़्यादा प्रयास। {s} सेकंड रुकें", "pro": "Pro मुफ़्त ट्रायल", "copy": "कॉपीराइट Gavin Trade · एकमात्र स्वामी। अनुमति के बिना कॉपी, नकल या वितरण वर्जित है"}};
+  var HASH="b1537a36cbe504633c6bd7232d9fd6f71d1cf6db0eecf0b9d720bdedf0be2661",HASHES=["b1537a36cbe504633c6bd7232d9fd6f71d1cf6db0eecf0b9d720bdedf0be2661","44f246c5981adf60a6e16c3ce5fd844484d1771978cb6dadbdaafac5d49238d3"],SK='gv_unlocked',G={"lo": {"sub": "ລະບົບວິເຄາະສັນຍານ FOREX ລະດັບ Premium", "ph": "ໃສ່ລະຫັດເຂົ້າແອັບ", "btn": "ເຂົ້າສູ່ລະບົບ", "err": "ລະຫັດບໍ່ຖືກຕ້ອງ", "lock": "ລອງຜິດຫຼາຍເກີນໄປ ກະລຸນາລໍຖ້າ {s} ວິນາທີ", "pro": "ໂປຣທົດລອງໃຊ້ຟຣີ", "copy": "ສະຫງວນລິຂະສິດ Gavin Trade · ເຈົ້າຂອງພຽງຜູ້ດຽວ ຫ້າມລອກລຽນແບບ ຫຼື ເອົາໄປເຜີຍແຜ່ໂດຍບໍ່ໄດ້ຮັບອະນຸຍາດ"}, "th": {"sub": "ระบบวิเคราะห์สัญญาณ FOREX ระดับพรีเมียม", "ph": "ใส่รหัสเข้าแอป", "btn": "เข้าสู่ระบบ", "err": "รหัสไม่ถูกต้อง", "lock": "ลองผิดหลายครั้งเกินไป กรุณารอ {s} วินาที", "pro": "โปรทดลองใช้ฟรี", "copy": "สงวนลิขสิทธิ์ Gavin Trade · เจ้าของเพียงผู้เดียว ห้ามคัดลอก เลียนแบบ หรือนำไปเผยแพร่โดยไม่ได้รับอนุญาต"}, "en": {"sub": "Premium FOREX signal analysis", "ph": "Enter app passcode", "btn": "LOG IN", "err": "Incorrect passcode", "lock": "Too many attempts. Wait {s}s", "pro": "Pro free trial", "copy": "© Gavin Trade · Sole owner. Copying, imitating or distributing without permission is prohibited"}, "zh": {"sub": "高级 FOREX 信号分析系统", "ph": "输入应用密码", "btn": "登录", "err": "密码错误", "lock": "尝试次数过多，请等待 {s} 秒", "pro": "Pro 免费试用", "copy": "版权所有 Gavin Trade · 唯一所有者，未经许可禁止复制、仿冒或传播"}, "ja": {"sub": "プレミアム FOREX シグナル分析", "ph": "アプリのパスコードを入力", "btn": "ログイン", "err": "パスコードが違います", "lock": "試行回数が多すぎます。{s}秒お待ちください", "pro": "Pro 無料トライアル", "copy": "著作権 Gavin Trade · 唯一の所有者。無断複製・模倣・配布を禁じます"}, "ko": {"sub": "프리미엄 FOREX 신호 분석", "ph": "앱 암호를 입력하세요", "btn": "로그인", "err": "암호가 올바르지 않습니다", "lock": "시도 횟수 초과. {s}초 후 다시 시도하세요", "pro": "Pro 무료 체험", "copy": "저작권 Gavin Trade · 단독 소유자. 무단 복제·모방·배포를 금지합니다"}, "vi": {"sub": "Phân tích tín hiệu FOREX cao cấp", "ph": "Nhập mật mã vào ứng dụng", "btn": "ĐĂNG NHẬP", "err": "Mật mã không đúng", "lock": "Thử sai quá nhiều. Vui lòng chờ {s} giây", "pro": "Dùng thử Pro miễn phí", "copy": "Bản quyền Gavin Trade · Chủ sở hữu duy nhất. Cấm sao chép, bắt chước hoặc phát tán khi chưa được phép"}, "id": {"sub": "Analisis sinyal FOREX premium", "ph": "Masukkan kode akses aplikasi", "btn": "MASUK", "err": "Kode salah", "lock": "Terlalu banyak percobaan. Tunggu {s} detik", "pro": "Uji coba Pro gratis", "copy": "Hak cipta Gavin Trade · Pemilik tunggal. Dilarang menyalin, meniru, atau menyebarkan tanpa izin"}, "ms": {"sub": "Analisis isyarat FOREX premium", "ph": "Masukkan kod akses aplikasi", "btn": "LOG MASUK", "err": "Kod salah", "lock": "Terlalu banyak percubaan. Tunggu {s} saat", "pro": "Percubaan Pro percuma", "copy": "Hak cipta Gavin Trade · Pemilik tunggal. Dilarang menyalin, meniru atau menyebarkan tanpa kebenaran"}, "es": {"sub": "Análisis premium de señales FOREX", "ph": "Introduce el código de acceso", "btn": "INICIAR SESIÓN", "err": "Código incorrecto", "lock": "Demasiados intentos. Espera {s} s", "pro": "Prueba gratuita Pro", "copy": "© Gavin Trade · Único propietario. Prohibido copiar, imitar o distribuir sin autorización"}, "fr": {"sub": "Analyse premium des signaux FOREX", "ph": "Saisissez le code d’accès", "btn": "CONNEXION", "err": "Code incorrect", "lock": "Trop de tentatives. Patientez {s} s", "pro": "Essai Pro gratuit", "copy": "© Gavin Trade · Seul propriétaire. Copie, imitation ou diffusion interdites sans autorisation"}, "de": {"sub": "Premium FOREX-Signalanalyse", "ph": "App-Code eingeben", "btn": "ANMELDEN", "err": "Falscher Code", "lock": "Zu viele Versuche. Bitte {s} s warten", "pro": "Pro kostenlos testen", "copy": "© Gavin Trade · Alleiniger Inhaber. Kopieren, Nachahmen oder Verbreiten ohne Erlaubnis verboten"}, "pt": {"sub": "Análise premium de sinais FOREX", "ph": "Digite o código de acesso", "btn": "ENTRAR", "err": "Código incorreto", "lock": "Muitas tentativas. Aguarde {s} s", "pro": "Teste Pro grátis", "copy": "© Gavin Trade · Único proprietário. Proibido copiar, imitar ou distribuir sem autorização"}, "ru": {"sub": "Премиум-анализ сигналов FOREX", "ph": "Введите код доступа", "btn": "ВОЙТИ", "err": "Неверный код", "lock": "Слишком много попыток. Подождите {s} с", "pro": "Pro — бесплатный пробный период", "copy": "© Gavin Trade · Единственный владелец. Копирование, подражание и распространение без разрешения запрещены"}, "ar": {"sub": "تحليل إشارات FOREX بمستوى بريميوم", "ph": "أدخل رمز الدخول إلى التطبيق", "btn": "تسجيل الدخول", "err": "الرمز غير صحيح", "lock": "محاولات كثيرة. انتظر {s} ثانية", "pro": "تجربة Pro مجانية", "copy": "حقوق النشر Gavin Trade · المالك الوحيد. يُمنع النسخ أو التقليد أو النشر دون إذن"}, "hi": {"sub": "प्रीमियम FOREX सिग्नल विश्लेषण", "ph": "ऐप का पासकोड डालें", "btn": "लॉग इन", "err": "गलत पासकोड", "lock": "बहुत ज़्यादा प्रयास। {s} सेकंड रुकें", "pro": "Pro मुफ़्त ट्रायल", "copy": "कॉपीराइट Gavin Trade · एकमात्र स्वामी। अनुमति के बिना कॉपी, नकल या वितरण वर्जित है"}};
   var $g=function(i){return document.getElementById(i)};
   function L(){var l=(typeof currentLang!=='undefined'?currentLang:'lo');return G[l]?l:'en'}
   function sha(s){
@@ -2900,7 +3089,7 @@ window.__nbClassify=classify;
     if(Date.now()<until)return;
     var v=$g('gPass').value.trim();if(!v)return;
     sha('gavin-trade|'+v).then(function(h){
-      if(h&&h===HASH){
+      if(h&&HASHES.indexOf(h)>-1){
         try{sessionStorage.setItem(SK,'1')}catch(e){}
         $g('gateCard').style.transition='.35s';$g('gateCard').style.opacity='0';$g('gateCard').style.transform='scale(1.04)';
         setTimeout(open,260);
@@ -3049,7 +3238,18 @@ window.__nbClassify=classify;
     if(!text)return;
     chime(kind||'c');
     try{if(flush&&ssu)speechSynthesis.cancel()}catch(e){}
-    setTimeout(function(){ if(!sysVoice(text,bcp))onlineTTS(text,bcp) },flush?150:380);
+    setTimeout(function(){
+      /* same AI voice as the news / guide reader (same voice, speed 1.2); the old engine stays only as a safety fallback */
+      if(window.gvReadAloud){
+        var SL=Object.keys(BCP).filter(function(k){return BCP[k]===bcp})[0]||'en',key='sig'+Date.now();
+        try{
+          window.gvReadAloud(text,SL,key);
+          if(btn){btn.classList.add('talk');var w=setInterval(function(){if(!(window.gvReadingKey&&window.gvReadingKey()===key)){clearInterval(w);btn.classList.remove('talk')}},400)}
+          return;
+        }catch(e){}
+      }
+      if(!sysVoice(text,bcp))onlineTTS(text,bcp);
+    },flush?150:380);
   }
   function speak(kind,d,n){
     if(!on())return;
